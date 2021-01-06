@@ -72,6 +72,8 @@ public class CompaniesDBDAO implements CompaniesDAO {
 			e.printStackTrace();
 			throw new CouponSystemDAOException("DAO Error: adding company failed", e);
 		}
+		
+		connectionPool.restoreConnection(con);
 	
 	}
 
@@ -103,6 +105,7 @@ public class CompaniesDBDAO implements CompaniesDAO {
 			throw new CouponSystemDAOException("DAO Error: updating company failed", e);
 		}
 		
+		connectionPool.restoreConnection(con);
 	}
 
 	/**
@@ -129,6 +132,8 @@ public class CompaniesDBDAO implements CompaniesDAO {
 			throw new CouponSystemDAOException("DAO Error: deleting company failed", e);
 		}
 		
+		connectionPool.restoreConnection(con);
+		
 	}
 
 	/**
@@ -140,7 +145,6 @@ public class CompaniesDBDAO implements CompaniesDAO {
 		
 		Connection con;
 		ArrayList<Company> companies = new ArrayList<Company>();
-		
 		try {
 			con = connectionPool.getConnection();
 			String sql = "select * from companies";

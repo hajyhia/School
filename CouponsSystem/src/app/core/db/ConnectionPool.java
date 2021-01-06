@@ -49,7 +49,7 @@ public class ConnectionPool {
 
 		Iterator<Connection> it = connections.iterator();
 		Connection connection = it.next();
-		connections.remove(connection);
+		it.remove();
 		return connection;
 	}
 
@@ -59,7 +59,7 @@ public class ConnectionPool {
 	}
 
 	public synchronized void closeAllConnections() throws CouponSystemConnectionException {
-		if (connections.size() == 5) {
+		if (connections.size() == MAX) {
 			for (Connection connection : connections) {
 				try {
 					connection.close();
