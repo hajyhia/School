@@ -11,6 +11,23 @@ public class Customer {
 	private String email;
 	private String password;
 	private List<Coupon> coupons = new ArrayList<>();
+	
+	
+
+	/**
+	 * @param id
+	 */
+	public Customer(int id) {
+		super();
+		this.id = id;
+	}
+
+	/**
+	 * 
+	 */
+	public Customer() {
+		super();
+	}
 
 	public Customer(int id, String firstName, String lastName, String email, String password) {
 		super();

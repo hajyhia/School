@@ -1,6 +1,6 @@
 package app.core.beans;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 public class Coupon {
 
@@ -9,14 +9,25 @@ public class Coupon {
 	private Category category;
 	private String title;
 	private String description;
-	private LocalDateTime startDate;
-	private LocalDateTime endDate;
+	private LocalDate startDate;
+	private LocalDate endDate;
 	private int amount;
 	private double price;
 	private String image;
+	
+	
 
-	public Coupon(int id, int companyID, Category category, String title, String description, LocalDateTime startDate,
-			LocalDateTime endDate, int amount, double price, String image) {
+	public Coupon() {
+		super();
+	}
+
+	public Coupon(int id) {
+		super();
+		this.id = id;
+	}
+
+	public Coupon(int id, int companyID, Category category, String title, String description, LocalDate startDate,
+			LocalDate endDate, int amount, double price, String image) {
 		super();
 		this.id = id;
 		this.companyID = companyID;
@@ -70,19 +81,19 @@ public class Coupon {
 		this.description = description;
 	}
 
-	public LocalDateTime getStartDate() {
+	public LocalDate getStartDate() {
 		return startDate;
 	}
 
-	public void setStartDate(LocalDateTime startDate) {
+	public void setStartDate(LocalDate startDate) {
 		this.startDate = startDate;
 	}
 
-	public LocalDateTime getEndDate() {
+	public LocalDate getEndDate() {
 		return endDate;
 	}
 
-	public void setEndDate(LocalDateTime endDate) {
+	public void setEndDate(LocalDate endDate) {
 		this.endDate = endDate;
 	}
 

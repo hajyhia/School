@@ -6,35 +6,27 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import app.core.beans.Company;
+import app.core.beans.Customer;
 import app.core.db.ConnectionPool;
 import app.core.exceptions.CouponSystemConnectionException;
 import app.core.exceptions.CouponSystemDAOException;
 
-public class CompaniesDBDAO implements CompaniesDAO {
-	
+public class CustomersDBDAO implements CustomersDAO {
+
 	private static ConnectionPool connectionPool;
-	
-	/**
-	 * @throws CouponSystemConnectionException 
-	 * 
-	 */
-	public CompaniesDBDAO() throws CouponSystemConnectionException {
+
+	public CustomersDBDAO() throws CouponSystemConnectionException {
 		connectionPool = ConnectionPool.getInstance();
 	}
 
-	/**
-	 *
-	 */
 	@Override
-	public boolean isCompanyExists(String email, String password) throws CouponSystemDAOException  {
-		
+	public boolean isCustomerExists(String email, String password) throws CouponSystemDAOException {
 		boolean isExist = false;
 		Connection con;
-		
+
 		try {
 			con = connectionPool.getConnection();
-			String sql = "select * from companies where email = ? AND password = ?";
+			String sql = "select * from customers where email = ? AND password = ?";
 			PreparedStatement pstmt = con.prepareStatement(sql);
 			pstmt.setString(1, email);
 			pstmt.setString(2, password);
@@ -46,55 +38,50 @@ public class CompaniesDBDAO implements CompaniesDAO {
 			e.printStackTrace();
 			throw new CouponSystemDAOException("DAO Error: checking existence failed", e);
 		}
-		
+
 		connectionPool.restoreConnection(con);
 		return isExist;
 	}
 
-	/**
-	 *
-	 */
 	@Override
-	public void addCompany(Company company) throws CouponSystemDAOException {
-		
+	public void addCustomer(Customer customer) throws CouponSystemDAOException {
+
 		Connection con;
-		
+
 		try {
 			con = connectionPool.getConnection();
-			String sql = "insert into companies values(?,?,?,?)";
+			String sql = "insert into customers values(?,?,?,?,?)";
 			PreparedStatement pstmt = con.prepareStatement(sql);
-			pstmt.setInt(1, company.getId());
-			pstmt.setString(2, company.getName());
-			pstmt.setString(3, company.getEmail());
-			pstmt.setString(4, company.getPassword());
+			pstmt.setInt(1, customer.getId());
+			pstmt.setString(2, customer.getFirstName());
+			pstmt.setString(3, customer.getLastName());
+			pstmt.setString(4, customer.getEmail());
+			pstmt.setString(5, customer.getPassword());
 			pstmt.executeUpdate();
 		} catch (CouponSystemConnectionException | SQLException e) {
 			e.printStackTrace();
 			throw new CouponSystemDAOException("DAO Error: adding company failed", e);
 		}
-		
+
 		connectionPool.restoreConnection(con);
-	
+
 	}
 
-	/**
-	 * @throws CouponSystemDAOException 
-	 *
-	 */
 	@Override
-	public void updateCompany(Company company) throws CouponSystemDAOException {
-		
+	public void updateCustomer(Customer customer) throws CouponSystemDAOException {
 		Connection con;
-		
+
 		try {
 			con = connectionPool.getConnection();
-			String sql = "update companies set name=?, email=?, password=? where id=?";
+			String sql = "update customers set firstname=?, lastname=?, email=?, password=? where id=?";
 			PreparedStatement pstmt = con.prepareStatement(sql);
-			pstmt.setString(1, company.getName());
-			pstmt.setString(2, company.getEmail());
-			pstmt.setString(3, company.getPassword());
-			pstmt.setInt(4, company.getId());
-			
+
+			pstmt.setString(1, customer.getFirstName());
+			pstmt.setString(2, customer.getLastName());
+			pstmt.setString(3, customer.getEmail());
+			pstmt.setString(4, customer.getPassword());
+			pstmt.setInt(5, customer.getId());
+
 			int rowCount = pstmt.executeUpdate();
 			if (rowCount == 0) {
 				throw new CouponSystemDAOException("DAO Error: failed to find the requiered company, updating failed");
@@ -104,24 +91,21 @@ public class CompaniesDBDAO implements CompaniesDAO {
 			e.printStackTrace();
 			throw new CouponSystemDAOException("DAO Error: updating company failed", e);
 		}
-		
+
 		connectionPool.restoreConnection(con);
+
 	}
 
-	/**
-	 * @throws CouponSystemDAOException 
-	 *
-	 */
 	@Override
-	public void deleteCompany(int companyID) throws CouponSystemDAOException {
+	public void deleteCustomer(int customerID) throws CouponSystemDAOException {
 		
 		Connection con;
-		
+
 		try {
 			con = connectionPool.getConnection();
-			String sql = "delete from companies where id=?";
+			String sql = "delete from customers where id=?";
 			PreparedStatement pstmt = con.prepareStatement(sql);
-			pstmt.setInt(1, companyID);
+			pstmt.setInt(1, customerID);
 			int rowCount = pstmt.executeUpdate();
 			if (rowCount == 0) {
 				throw new CouponSystemDAOException("DAO Error: failed to find the requiered company, deleting failed");
@@ -131,64 +115,59 @@ public class CompaniesDBDAO implements CompaniesDAO {
 			e.printStackTrace();
 			throw new CouponSystemDAOException("DAO Error: deleting company failed", e);
 		}
-		
+
 		connectionPool.restoreConnection(con);
-		
+
 	}
 
-	/**
-	 * @throws CouponSystemDAOException 
-	 *
-	 */
 	@Override
-	public ArrayList<Company> getAllCompanies() throws CouponSystemDAOException {
+	public ArrayList<Customer> getAllCustomers() throws CouponSystemDAOException {
 		
 		Connection con;
-		ArrayList<Company> companies = new ArrayList<Company>();
+		ArrayList<Customer> customers = new ArrayList<Customer>();
 		try {
 			con = connectionPool.getConnection();
-			String sql = "select * from companies";
+			String sql = "select * from customers";
 			PreparedStatement pstmt = con.prepareStatement(sql);
 			ResultSet rs = pstmt.executeQuery();
 			while (rs.next()) {
-				Company company = new Company();
-				company.setId(rs.getInt("id"));
-				company.setName(rs.getString("name"));
-				company.setEmail(rs.getString("email"));
-				company.setPassword(rs.getString("password"));
-				companies.add(company);
+				Customer customer = new Customer();
+				customer.setId(rs.getInt("id"));
+				customer.setFirstName(rs.getString("firstname"));
+				customer.setLastName(rs.getString("lastname"));
+				customer.setEmail(rs.getString("email"));
+				customer.setPassword(rs.getString("password"));
+				customers.add(customer);
 			}
 			
 		} catch (CouponSystemConnectionException | SQLException e) {
 			e.printStackTrace();
 			throw new CouponSystemDAOException("DAO Error: getting all companies failed", e);
 		}
-		
+
 		connectionPool.restoreConnection(con);
-		return companies;
+		return customers;
+		
 	}
 
-	/**
-	 * @throws CouponSystemDAOException 
-	 *
-	 */
 	@Override
-	public Company getOneCompany(int companyID) throws CouponSystemDAOException {
+	public Customer getOneCustomer(int customerID) throws CouponSystemDAOException {
 		
 		Connection con;
-		Company company;
+		Customer customer;
 		
 		try {
 			con = connectionPool.getConnection();
-			String sql = "select * from companies where id=?";
+			String sql = "select * from customers where id=?";
 			PreparedStatement pstmt = con.prepareStatement(sql);
-			pstmt.setInt(1, companyID);
+			pstmt.setInt(1, customerID);
 			ResultSet rs = pstmt.executeQuery();
 			if (rs.next()) {
-				company = new Company(companyID);
-				company.setName(rs.getString("name"));
-				company.setEmail(rs.getString("email"));
-				company.setPassword(rs.getString("password"));
+				customer = new Customer(customerID);
+				customer.setFirstName(rs.getString("firstname"));
+				customer.setLastName(rs.getString("lastname"));
+				customer.setEmail(rs.getString("email"));
+				customer.setPassword(rs.getString("password"));
 			}else {
 				throw new CouponSystemDAOException("DAO Error: failed to find the requiered company, getting company failed");
 			}
@@ -199,9 +178,10 @@ public class CompaniesDBDAO implements CompaniesDAO {
 		}
 		
 		connectionPool.restoreConnection(con);
-		return company;
+		return customer;
 		
 	}
 
-	
+
+
 }
