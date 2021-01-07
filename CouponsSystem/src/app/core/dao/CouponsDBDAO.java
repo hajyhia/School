@@ -32,6 +32,10 @@ public class CouponsDBDAO implements CouponsDAO {
 				pstmt.setInt(1, coupon.getId());
 				pstmt.setInt(2, coupon.getCompanyID());
 				pstmt.setInt(3, coupon.getCategory().ordinal());
+				
+				//adding new category if it not exists.
+				addCategory(coupon.getCategory());
+				
 				pstmt.setString(4, coupon.getTitle());
 				pstmt.setString(5, coupon.getDescription());
 				pstmt.setDate(6, Date.valueOf(coupon.getStartDate()));
@@ -64,6 +68,10 @@ public class CouponsDBDAO implements CouponsDAO {
 
 			pstmt.setInt(1, coupon.getCompanyID());
 			pstmt.setInt(2, coupon.getCategory().ordinal());
+			
+			//adding new category if it not exists.
+			addCategory(coupon.getCategory());
+			
 			pstmt.setString(3, coupon.getTitle());
 			pstmt.setString(4, coupon.getDescription());
 			pstmt.setDate(5, Date.valueOf(coupon.getStartDate()));
@@ -259,7 +267,7 @@ public class CouponsDBDAO implements CouponsDAO {
 	@Override
 	public void addCategory(Category category) throws CouponSystemDAOException {
 
-		if (isCategoryExists(category)) {
+		if (!isCategoryExists(category)) {
 
 			Connection con;
 
