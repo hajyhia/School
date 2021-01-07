@@ -18,39 +18,43 @@ public class CouponsDBDAO implements CouponsDAO {
 
 	private static ConnectionPool connectionPool;
 
-
 	@Override
 	public void addCoupon(Coupon coupon) throws CouponSystemDAOException {
 
-		Connection con;
+		if (isCouponExists(coupon.getId())) {
 
-		try {
-			con = connectionPool.getConnection();
-			String sql = "insert into coupon values(?,?,?,?,?,?,?,?,?,?)";
-			PreparedStatement pstmt = con.prepareStatement(sql);
-			pstmt.setInt(1, coupon.getId());
-			pstmt.setInt(2, coupon.getCompanyID());
-			pstmt.setInt(3, coupon.getCategory().ordinal());
-			pstmt.setString(4, coupon.getTitle());
-			pstmt.setString(5, coupon.getDescription());
-			pstmt.setDate(6, Date.valueOf(coupon.getStartDate()));
-			pstmt.setDate(7, Date.valueOf(coupon.getEndDate()));
-			pstmt.setInt(8, coupon.getAmount());
-			pstmt.setDouble(9, coupon.getPrice());
-			pstmt.setString(10, coupon.getImage());
-			pstmt.executeUpdate();
-		} catch (CouponSystemConnectionException | SQLException e) {
-			e.printStackTrace();
-			throw new CouponSystemDAOException("DAO Error: adding coupon failed", e);
+			Connection con;
+
+			try {
+				con = connectionPool.getConnection();
+				String sql = "insert into coupons values(?,?,?,?,?,?,?,?,?,?)";
+				PreparedStatement pstmt = con.prepareStatement(sql);
+				pstmt.setInt(1, coupon.getId());
+				pstmt.setInt(2, coupon.getCompanyID());
+				pstmt.setInt(3, coupon.getCategory().ordinal());
+				pstmt.setString(4, coupon.getTitle());
+				pstmt.setString(5, coupon.getDescription());
+				pstmt.setDate(6, Date.valueOf(coupon.getStartDate()));
+				pstmt.setDate(7, Date.valueOf(coupon.getEndDate()));
+				pstmt.setInt(8, coupon.getAmount());
+				pstmt.setDouble(9, coupon.getPrice());
+				pstmt.setString(10, coupon.getImage());
+				pstmt.executeUpdate();
+			} catch (CouponSystemConnectionException | SQLException e) {
+				e.printStackTrace();
+				throw new CouponSystemDAOException("DAO Error: adding coupon failed", e);
+			}
+
+			connectionPool.restoreConnection(con);
+		} else {
+			throw new CouponSystemDAOException("DAO Error: adding coupon failed, coupon exists already");
 		}
 
-		connectionPool.restoreConnection(con);
-		
 	}
 
 	@Override
 	public void updateCoupon(Coupon coupon) throws CouponSystemDAOException {
-		
+
 		Connection con;
 
 		try {
@@ -80,7 +84,7 @@ public class CouponsDBDAO implements CouponsDAO {
 		}
 
 		connectionPool.restoreConnection(con);
-		
+
 	}
 
 	@Override
@@ -90,7 +94,7 @@ public class CouponsDBDAO implements CouponsDAO {
 
 		try {
 			con = connectionPool.getConnection();
-			String sql = "delete from coupon where id=?";
+			String sql = "delete from coupons where id=?";
 			PreparedStatement pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1, couponID);
 			int rowCount = pstmt.executeUpdate();
@@ -104,7 +108,7 @@ public class CouponsDBDAO implements CouponsDAO {
 		}
 
 		connectionPool.restoreConnection(con);
-		
+
 	}
 
 	@Override
@@ -131,7 +135,7 @@ public class CouponsDBDAO implements CouponsDAO {
 				coupon.setImage(rs.getString("image"));
 				coupons.add(coupon);
 			}
-			
+
 		} catch (CouponSystemConnectionException | SQLException e) {
 			e.printStackTrace();
 			throw new CouponSystemDAOException("DAO Error: getting all coupons failed", e);
@@ -139,18 +143,18 @@ public class CouponsDBDAO implements CouponsDAO {
 
 		connectionPool.restoreConnection(con);
 		return coupons;
-		
+
 	}
 
 	@Override
 	public Coupon getOneCoupon(int couponID) throws CouponSystemDAOException {
-		
+
 		Connection con;
 		Coupon coupon;
-		
+
 		try {
 			con = connectionPool.getConnection();
-			String sql = "select * from customers where id=?";
+			String sql = "select * from coupons where id=?";
 			PreparedStatement pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1, couponID);
 			ResultSet rs = pstmt.executeQuery();
@@ -165,32 +169,142 @@ public class CouponsDBDAO implements CouponsDAO {
 				coupon.setAmount(rs.getInt("amount"));
 				coupon.setPrice(rs.getInt("price"));
 				coupon.setImage(rs.getString("image"));
-			}else {
-				throw new CouponSystemDAOException("DAO Error: failed to find the requiered coupons, getting company failed");
+			} else {
+				throw new CouponSystemDAOException(
+						"DAO Error: failed to find the requiered coupons, getting company failed");
 			}
-			
+
 		} catch (CouponSystemConnectionException | SQLException e) {
 			e.printStackTrace();
 			throw new CouponSystemDAOException("DAO Error: getting coupons failed", e);
 		}
-		
+
 		connectionPool.restoreConnection(con);
 		return coupon;
-		
+
 	}
 
 	@Override
-	public void addCouponPurchase(int customerID, int couponID) {
-		// TODO Auto-generated method stub
-		
+	public void addCouponPurchase(int customerID, int couponID) throws CouponSystemDAOException {
+
+		Connection con;
+
+		try {
+			con = connectionPool.getConnection();
+			String sql = "insert into customers_vs_coupons values(?,?)";
+			PreparedStatement pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, customerID);
+			pstmt.setInt(2, couponID);
+			pstmt.executeUpdate();
+		} catch (CouponSystemConnectionException | SQLException e) {
+			e.printStackTrace();
+			throw new CouponSystemDAOException("DAO Error: adding coupon purchase failed", e);
+		}
+
+		connectionPool.restoreConnection(con);
+
 	}
 
 	@Override
-	public void deleteCouponPurchase(int customerID, int couponID) {
-		// TODO Auto-generated method stub
-		
+	public void deleteCouponPurchase(int customerID, int couponID) throws CouponSystemDAOException {
+
+		Connection con;
+
+		try {
+			con = connectionPool.getConnection();
+			String sql = "delete from customers_vs_coupons where cutomer_id=? and coupon_id=?";
+			PreparedStatement pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, customerID);
+			pstmt.setInt(2, couponID);
+			int rowCount = pstmt.executeUpdate();
+			if (rowCount == 0) {
+				throw new CouponSystemDAOException(
+						"DAO Error: failed to find the requiered coupon purchase, deleting failed");
+			}
+
+		} catch (CouponSystemConnectionException | SQLException e) {
+			e.printStackTrace();
+			throw new CouponSystemDAOException("DAO Error: deleting coupon purchase failed", e);
+		}
+
+		connectionPool.restoreConnection(con);
+
 	}
 
-	
+	@Override
+	public boolean isCouponExists(int couponID) throws CouponSystemDAOException {
+
+		boolean isExist = false;
+		Connection con;
+
+		try {
+			con = connectionPool.getConnection();
+			String sql = "select * from coupons where id = ?";
+			PreparedStatement pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, couponID);
+			ResultSet rs = pstmt.executeQuery();
+			if (rs.next()) {
+				isExist = true;
+			}
+		} catch (CouponSystemConnectionException | SQLException e) {
+			e.printStackTrace();
+			throw new CouponSystemDAOException("DAO Error: checking existence failed", e);
+		}
+
+		connectionPool.restoreConnection(con);
+		return isExist;
+
+	}
+
+	@Override
+	public void addCategory(Category category) throws CouponSystemDAOException {
+
+		if (isCategoryExists(category)) {
+
+			Connection con;
+
+			try {
+				con = connectionPool.getConnection();
+				String sql = "insert into categories values(?,?)";
+				PreparedStatement pstmt = con.prepareStatement(sql);
+				pstmt.setInt(1, category.ordinal());
+				pstmt.setString(2, category.toString());
+				pstmt.executeUpdate();
+			} catch (CouponSystemConnectionException | SQLException e) {
+				e.printStackTrace();
+				throw new CouponSystemDAOException("DAO Error: adding category failed", e);
+			}
+
+			connectionPool.restoreConnection(con);
+		} else {
+			throw new CouponSystemDAOException("DAO Error: adding category failed, category exists already");
+		}
+
+	}
+
+	@Override
+	public boolean isCategoryExists(Category category) throws CouponSystemDAOException {
+
+		boolean isExist = false;
+		Connection con;
+
+		try {
+			con = connectionPool.getConnection();
+			String sql = "select * from caregories where id = ?";
+			PreparedStatement pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, category.ordinal());
+			ResultSet rs = pstmt.executeQuery();
+			if (rs.next()) {
+				isExist = true;
+			}
+		} catch (CouponSystemConnectionException | SQLException e) {
+			e.printStackTrace();
+			throw new CouponSystemDAOException("DAO Error: checking existence failed", e);
+		}
+
+		connectionPool.restoreConnection(con);
+		return isExist;
+
+	}
 
 }

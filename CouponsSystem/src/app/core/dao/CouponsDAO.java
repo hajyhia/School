@@ -2,6 +2,7 @@ package app.core.dao;
 
 import java.util.ArrayList;
 
+import app.core.beans.Category;
 import app.core.beans.Coupon;
 import app.core.exceptions.CouponSystemDAOException;
 
@@ -10,7 +11,7 @@ public interface CouponsDAO {
 
 
 
-	// boolean isCouponExists(Coupon coupon) throws CouponSystemDAOException;
+	boolean isCouponExists(int couponID) throws CouponSystemDAOException;
 	
 	
 
@@ -34,11 +35,19 @@ public interface CouponsDAO {
 	
 	
 	
-	void addCouponPurchase(int customerID, int couponID);
+	void addCategory(Category category) throws CouponSystemDAOException;
 	
 	
 	
-	void deleteCouponPurchase(int customerID, int couponID);
+	boolean isCategoryExists(Category category) throws CouponSystemDAOException;
+	
+	
+	
+	void addCouponPurchase(int customerID, int couponID) throws CouponSystemDAOException;
+	
+	
+	
+	void deleteCouponPurchase(int customerID, int couponID) throws CouponSystemDAOException;
 	
 	
 	

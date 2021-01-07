@@ -3,6 +3,7 @@ package app.tests;
 import java.util.ArrayList;
 import java.util.List;
 
+import app.core.beans.Category;
 import app.core.beans.Company;
 import app.core.dao.CompaniesDBDAO;
 import app.core.exceptions.CouponSystemConnectionException;
@@ -54,7 +55,9 @@ public class CompaniesDBDAOTest {
 		System.out.println("============ updateCompany Test ================");
 		System.out.println("deleting company with id 2 ");
 		
+		Category category = Category.FOOD;
 		
+		System.out.println(category);
 		
 		
 
