@@ -15,6 +15,7 @@ public class CustomersDBDAO implements CustomersDAO {
 
 	private static ConnectionPool connectionPool;
 
+	//asdasd
 	public CustomersDBDAO() throws CouponSystemConnectionException {
 		connectionPool = ConnectionPool.getInstance();
 	}
