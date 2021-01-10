@@ -3,8 +3,8 @@ package app.core.dao;
 import java.util.ArrayList;
 
 import app.core.beans.Customer;
-import app.core.exceptions.CouponSystemConnectionException;
-import app.core.exceptions.CouponSystemDAOException;
+import app.core.exceptions.ConnectionPoolException;
+import app.core.exceptions.DAOException;
 
 /**
  * @author Nour
@@ -17,30 +17,33 @@ public interface CustomersDAO {
 	 * @param email
 	 * @param password
 	 * @return
-	 * @throws CouponSystemConnectionException 
-	 * @throws CouponSystemDAOException 
+	 * @throws ConnectionPoolException 
+	 * @throws DAOException 
 	 */
-	boolean isCustomerExists(String email, String password) throws CouponSystemDAOException;
+	boolean isCustomerExists(String email, String password) throws DAOException;
+	
+	
+	public boolean isCustomerEmailExists(String email) throws DAOException;
+	
+	
+	
+	void addCustomer(Customer customer) throws DAOException;
 	
 	
 
-	void addCustomer(Customer customer) throws CouponSystemDAOException;
+	void updateCustomer(Customer customer) throws DAOException;
 	
 	
 
-	void updateCustomer(Customer customer) throws CouponSystemDAOException;
+	void deleteCustomer(int customerID) throws DAOException;
 	
 	
 
-	void deleteCustomer(int customerID) throws CouponSystemDAOException;
+	ArrayList<Customer> getAllCustomers() throws DAOException;
 	
 	
 
-	ArrayList<Customer> getAllCustomers() throws CouponSystemDAOException;
-	
-	
-
-	Customer getOneCustomer(int customerID) throws CouponSystemDAOException;
+	Customer getOneCustomer(int customerID) throws DAOException;
 	
 	
 }

@@ -5,9 +5,8 @@ import java.util.List;
 
 import app.core.beans.Category;
 import app.core.beans.Company;
-import app.core.dao.CompaniesDBDAO;
-import app.core.exceptions.CouponSystemConnectionException;
-import app.core.exceptions.CouponSystemDAOException;
+import app.core.dao.impel.CompaniesDBDAO;
+import app.core.exceptions.DAOException;
 
 public class CompaniesDBDAOTest {
 
@@ -28,7 +27,7 @@ public class CompaniesDBDAOTest {
 			compDao.addCompany(updateCompany);
 			
 			
-		} catch (CouponSystemConnectionException | CouponSystemDAOException e) {
+		} catch (DAOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

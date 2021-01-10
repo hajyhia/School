@@ -1,6 +1,6 @@
 package app.core.exceptions;
 
-public class CouponSystemDAOException extends CouponSystemExceprion {
+public class DAOException extends CouponSystemExceprion {
 
 	/**
 	 * 
@@ -10,7 +10,7 @@ public class CouponSystemDAOException extends CouponSystemExceprion {
 	/**
 	 * 
 	 */
-	public CouponSystemDAOException() {
+	public DAOException() {
 		super();
 	}
 
@@ -20,7 +20,7 @@ public class CouponSystemDAOException extends CouponSystemExceprion {
 	 * @param enableSuppression
 	 * @param writableStackTrace
 	 */
-	public CouponSystemDAOException(String message, Throwable cause, boolean enableSuppression,
+	public DAOException(String message, Throwable cause, boolean enableSuppression,
 			boolean writableStackTrace) {
 		super(message, cause, enableSuppression, writableStackTrace);
 	}
@@ -29,21 +29,21 @@ public class CouponSystemDAOException extends CouponSystemExceprion {
 	 * @param message
 	 * @param cause
 	 */
-	public CouponSystemDAOException(String message, Throwable cause) {
+	public DAOException(String message, Throwable cause) {
 		super(message, cause);
 	}
 
 	/**
 	 * @param message
 	 */
-	public CouponSystemDAOException(String message) {
+	public DAOException(String message) {
 		super(message);
 	}
 
 	/**
 	 * @param cause
 	 */
-	public CouponSystemDAOException(Throwable cause) {
+	public DAOException(Throwable cause) {
 		super(cause);
 	}
 	

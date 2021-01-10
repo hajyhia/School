@@ -7,7 +7,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import app.core.exceptions.CouponSystemConnectionException;
+import app.core.exceptions.ConnectionPoolException;
 
 public class ConnectionPool {
 
@@ -19,18 +19,18 @@ public class ConnectionPool {
 
 	private static ConnectionPool instance;
 
-	private ConnectionPool() throws CouponSystemConnectionException {
+	private ConnectionPool() throws ConnectionPoolException {
 		for (int i = 0; i < MAX; i++) {
 			try {
 				Connection con = DriverManager.getConnection(url, user, password);
 				connections.add(con);
 			} catch (SQLException e) {
-				throw new CouponSystemConnectionException("Connection Error: failed to connect", e);
+				throw new ConnectionPoolException("Connection Error: failed to connect", e);
 			}
 		}
 	}
 
-	public static ConnectionPool getInstance() throws CouponSystemConnectionException {
+	public static ConnectionPool getInstance() throws ConnectionPoolException {
 		if (instance == null) {
 			instance = new ConnectionPool();
 			return instance;
@@ -38,12 +38,12 @@ public class ConnectionPool {
 		return instance;
 	}
 
-	public synchronized Connection getConnection() throws CouponSystemConnectionException {
+	public synchronized Connection getConnection() throws ConnectionPoolException {
 		while (connections.isEmpty()) {
 			try {
 				wait();
 			} catch (InterruptedException e) {
-				throw new CouponSystemConnectionException("Connection Eroor: is interrupted", e);
+				throw new ConnectionPoolException("Connection Eroor: is interrupted", e);
 			}
 		}
 
@@ -58,20 +58,17 @@ public class ConnectionPool {
 		notify();
 	}
 
-	public synchronized void closeAllConnections() throws CouponSystemConnectionException {
-		if (connections.size() == MAX) {
+	public synchronized void closeAllConnections() throws ConnectionPoolException {
+
 			for (Connection connection : connections) {
 				try {
 					connection.close();
 				} catch (SQLException e) {
 					e.printStackTrace();
-					throw new CouponSystemConnectionException("Connection Error: failed to close", e);
+					throw new ConnectionPoolException("Connection Error: failed to close", e);
 				}
 			}
-		} else {
-			throw new CouponSystemConnectionException(
-					"Connection Error: failed to close all connections, missing connections in the pool");
-		}
+	
 
 	}
 
