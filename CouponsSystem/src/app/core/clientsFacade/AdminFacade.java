@@ -7,19 +7,19 @@ import app.core.beans.Customer;
 import app.core.dao.impel.CompaniesDBDAO;
 import app.core.dao.impel.CouponsDBDAO;
 import app.core.dao.impel.CustomersDBDAO;
-import app.core.exceptions.CouponSystemFacadException;
+import app.core.exceptions.FacadeException;
 import app.core.exceptions.DAOException;
 
 public class AdminFacade extends ClientFacade {
 
-	public AdminFacade() throws CouponSystemFacadException {
+	public AdminFacade() throws FacadeException {
 		try {
 			super.companiesDAO = new CompaniesDBDAO();
 			super.customersDAO = new CustomersDBDAO();
 			super.couponsDAO = new CouponsDBDAO();
 		} catch (DAOException e) {
 			e.printStackTrace();
-			throw new CouponSystemFacadException("AdminFacade Error: initializing AdminFacade failed", e);
+			throw new FacadeException("AdminFacade Error: initializing AdminFacade failed", e);
 		}
 	}
 
@@ -32,19 +32,19 @@ public class AdminFacade extends ClientFacade {
 		}
 	}
 
-	public void addCompany(Company company) throws CouponSystemFacadException {
+	public void addCompany(Company company) throws FacadeException {
 
 		try {
 			// Check the db if contains a company with the same name, if true throw facade
 			// exception
 			if (companiesDAO.isCompanyNameExist(company.getName())) {
-				throw new CouponSystemFacadException(
+				throw new FacadeException(
 						"AdminFacade Error: adding company failed, company name already exists");
 			}
 			// Check the db if contains a company with the same email, if true throw facade
 			// exception
 			else if (companiesDAO.isCompanyEmailExist(company.getEmail())) {
-				throw new CouponSystemFacadException(
+				throw new FacadeException(
 						"AdminFacade Error: adding company failed, company email already exists");
 			}
 			// if passes then add company to db
@@ -53,105 +53,105 @@ public class AdminFacade extends ClientFacade {
 			}
 		} catch (DAOException e) {
 			e.printStackTrace();
-			throw new CouponSystemFacadException("AdminFacade Error: adding company failed", e);
+			throw new FacadeException("AdminFacade Error: adding company failed", e);
 		}
 
 	}
 
-	public void updateCompany(Company company) throws CouponSystemFacadException {
+	public void updateCompany(Company company) throws FacadeException {
 
 		try {
 			companiesDAO.updateCompany(company);
 		} catch (DAOException e) {
 			e.printStackTrace();
-			throw new CouponSystemFacadException("AdminFacade Error: updating company failed", e);
+			throw new FacadeException("AdminFacade Error: updating company failed", e);
 		}
 
 	}
 
-	public void deleteCompany(Company company) throws CouponSystemFacadException {
+	public void deleteCompany(Company company) throws FacadeException {
 
 		try {
 			companiesDAO.deleteCompany(company.getId());
 		} catch (DAOException e) {
 			e.printStackTrace();
-			throw new CouponSystemFacadException("AdminFacade Error: deleting company failed", e);
+			throw new FacadeException("AdminFacade Error: deleting company failed", e);
 		}
 
 	}
 
-	public ArrayList<Company> getAllCompanies() throws CouponSystemFacadException {
+	public ArrayList<Company> getAllCompanies() throws FacadeException {
 		try {
 			return companiesDAO.getAllCompanies();
 		} catch (DAOException e) {
 			e.printStackTrace();
-			throw new CouponSystemFacadException("AdminFacade Error: getting all companies failed", e);
+			throw new FacadeException("AdminFacade Error: getting all companies failed", e);
 		}
 	}
 
-	public Company getOneCompany(Company company) throws CouponSystemFacadException {
+	public Company getOneCompany(Company company) throws FacadeException {
 		try {
 			return companiesDAO.getOneCompany(company.getId());
 		} catch (DAOException e) {
 			e.printStackTrace();
-			throw new CouponSystemFacadException("AdminFacade Error: getting company failed", e);
+			throw new FacadeException("AdminFacade Error: getting company failed", e);
 		}
 	}
 
-	public void addCustomer(Customer customer) throws CouponSystemFacadException {
+	public void addCustomer(Customer customer) throws FacadeException {
 
 		try {
 			if (!customersDAO.isCustomerEmailExists(customer.getEmail())) {
 				customersDAO.addCustomer(customer);
 			} else {
-				throw new CouponSystemFacadException(
+				throw new FacadeException(
 						"AdminFacade Error: adding customer failed, customer email already exists");
 			}
 		} catch (DAOException e) {
 			e.printStackTrace();
-			throw new CouponSystemFacadException("AdminFacade Error: adding customer failed", e);
+			throw new FacadeException("AdminFacade Error: adding customer failed", e);
 		}
 
 	}
 
-	public void updateCustomer(Customer customer) throws CouponSystemFacadException {
+	public void updateCustomer(Customer customer) throws FacadeException {
 
 		try {
 			customersDAO.updateCustomer(customer);
 
 		} catch (DAOException e) {
 			e.printStackTrace();
-			throw new CouponSystemFacadException("AdminFacade Error: updating customer failed", e);
+			throw new FacadeException("AdminFacade Error: updating customer failed", e);
 		}
 
 	}
 
-	public void deleteCustomer(int customerID) throws CouponSystemFacadException {
+	public void deleteCustomer(int customerID) throws FacadeException {
 		try {
 			customersDAO.deleteCustomer(customerID);
 		} catch (DAOException e) {
 			e.printStackTrace();
-			throw new CouponSystemFacadException("AdminFacade Error: delete customer failed", e);
+			throw new FacadeException("AdminFacade Error: delete customer failed", e);
 		}
 	}
 
-	public ArrayList<Customer> getAllCustomers() throws CouponSystemFacadException {
+	public ArrayList<Customer> getAllCustomers() throws FacadeException {
 
 		try {
 			return customersDAO.getAllCustomers();
 		} catch (DAOException e) {
 			e.printStackTrace();
-			throw new CouponSystemFacadException("AdminFacade Error: geting all customer failed", e);
+			throw new FacadeException("AdminFacade Error: geting all customer failed", e);
 		}
 
 	}
 
-	public Customer getOneCustomer(int customerID) throws CouponSystemFacadException {
+	public Customer getOneCustomer(int customerID) throws FacadeException {
 		try {
 			return customersDAO.getOneCustomer(customerID);
 		} catch (DAOException e) {
 			e.printStackTrace();
-			throw new CouponSystemFacadException("AdminFacade Error: geting customer failed", e);
+			throw new FacadeException("AdminFacade Error: geting customer failed", e);
 		}
 
 	}

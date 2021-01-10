@@ -3,20 +3,20 @@ package app.core.clientsFacade;
 import app.core.beans.Company;
 import app.core.beans.Coupon;
 import app.core.dao.impel.CompaniesDBDAO;
-import app.core.exceptions.CouponSystemFacadException;
+import app.core.exceptions.FacadeException;
 import app.core.exceptions.DAOException;
 
 public class CompanyFacade extends ClientFacade {
 	
 	private int companyID;
 	
-	public CompanyFacade() throws CouponSystemFacadException {
+	public CompanyFacade() throws FacadeException {
 		try {
 			super.companiesDAO = new CompaniesDBDAO();
 		} catch (DAOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			throw new CouponSystemFacadException("AdminFacade Error: initializing CompanyFacade failed", e);
+			throw new FacadeException("AdminFacade Error: initializing CompanyFacade failed", e);
 		}
 	}
 
