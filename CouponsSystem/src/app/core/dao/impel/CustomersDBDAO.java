@@ -22,10 +22,8 @@ public class CustomersDBDAO implements CustomersDAO {
 		} catch (ConnectionPoolException e) {
 			e.printStackTrace();
 			throw new DAOException("DAO Error: initializing customers failed", e);
-		}		
+		}
 	}
-	
-	
 
 	@Override
 	public boolean isCustomerExists(String email, String password) throws DAOException {
@@ -50,7 +48,7 @@ public class CustomersDBDAO implements CustomersDAO {
 		connectionPool.restoreConnection(con);
 		return isExist;
 	}
-	
+
 	@Override
 	public boolean isCustomerEmailExists(String email) throws DAOException {
 		boolean isExist = false;
@@ -161,14 +159,16 @@ public class CustomersDBDAO implements CustomersDAO {
 			String sql = "select * from customers";
 			PreparedStatement pstmt = con.prepareStatement(sql);
 			ResultSet rs = pstmt.executeQuery();
-			while (rs.next()) {
-				Customer customer = new Customer();
-				customer.setId(rs.getInt("id"));
-				customer.setFirstName(rs.getString("firstname"));
-				customer.setLastName(rs.getString("lastname"));
-				customer.setEmail(rs.getString("email"));
-				customer.setPassword(rs.getString("password"));
-				customers.add(customer);
+			if (rs.next()) {
+				while (rs.next()) {
+					Customer customer = new Customer();
+					customer.setId(rs.getInt("id"));
+					customer.setFirstName(rs.getString("firstname"));
+					customer.setLastName(rs.getString("lastname"));
+					customer.setEmail(rs.getString("email"));
+					customer.setPassword(rs.getString("password"));
+					customers.add(customer);
+				}
 			}
 
 		} catch (ConnectionPoolException | SQLException e) {
@@ -200,8 +200,8 @@ public class CustomersDBDAO implements CustomersDAO {
 				customer.setEmail(rs.getString("email"));
 				customer.setPassword(rs.getString("password"));
 			} else {
-				throw new DAOException(
-						"DAO Error: failed to find the requiered company, getting company failed");
+				return null;
+//				throw new DAOException("DAO Error: failed to find the requiered company, getting company failed");
 			}
 
 		} catch (ConnectionPoolException | SQLException e) {
@@ -213,7 +213,5 @@ public class CustomersDBDAO implements CustomersDAO {
 		return customer;
 
 	}
-
-
 
 }

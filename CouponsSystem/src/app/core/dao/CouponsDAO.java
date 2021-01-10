@@ -24,6 +24,5 @@ public interface CouponsDAO {
 	void deleteCouponPurchase(int customerID, int couponID) throws DAOException;
 
 	void addCategory(Category category) throws DAOException;
-
-
+	
 }

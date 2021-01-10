@@ -17,7 +17,7 @@ public class CompaniesDBDAO implements CompaniesDAO {
 	private ConnectionPool connectionPool;
 
 	/**
-	 * @throws DAOException 
+	 * @throws DAOException
 	 * @throws ConnectionPoolException
 	 * 
 	 */
@@ -27,10 +27,8 @@ public class CompaniesDBDAO implements CompaniesDAO {
 		} catch (ConnectionPoolException e) {
 			e.printStackTrace();
 			throw new DAOException("DAO Error: initializing companies failed", e);
-		}		
+		}
 	}
-
-
 
 	@Override
 	public boolean isCompanyExists(String email, String password) throws DAOException {
@@ -50,7 +48,8 @@ public class CompaniesDBDAO implements CompaniesDAO {
 			}
 		} catch (ConnectionPoolException e) {
 			e.printStackTrace();
-			throw new DAOException("DAO Error: checking existence failed: failed to aquire connection from connection pool", e);
+			throw new DAOException(
+					"DAO Error: checking existence failed: failed to aquire connection from connection pool", e);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new DAOException("DAO Error: checking existence failed: failed to aquire company from SQL", e);
@@ -58,9 +57,9 @@ public class CompaniesDBDAO implements CompaniesDAO {
 
 		connectionPool.restoreConnection(con);
 		return isExist;
-		
+
 	}
-	
+
 	@Override
 	public boolean isCompanyEmailExist(String companyEmail) throws DAOException {
 		boolean isExist = false;
@@ -83,7 +82,7 @@ public class CompaniesDBDAO implements CompaniesDAO {
 		connectionPool.restoreConnection(con);
 		return isExist;
 	}
-	
+
 	@Override
 	public boolean isCompanyNameExist(String companyName) throws DAOException {
 		boolean isExist = false;
@@ -144,18 +143,12 @@ public class CompaniesDBDAO implements CompaniesDAO {
 
 		try {
 			con = connectionPool.getConnection();
-			String sql = "update companies set email=?, password=? where id=? and name=?";
+			String sql = "update companies set email=?, password=? where id =?";
 			PreparedStatement pstmt = con.prepareStatement(sql);
 			pstmt.setString(1, company.getEmail());
 			pstmt.setString(2, company.getPassword());
 			pstmt.setInt(3, company.getId());
-			pstmt.setString(4, company.getName());
-
-			int rowCount = pstmt.executeUpdate();
-			if (rowCount == 0) {
-				throw new DAOException("DAO Error: failed to find the requiered company, updating failed");
-			}
-
+			pstmt.executeUpdate();
 		} catch (ConnectionPoolException | SQLException e) {
 			e.printStackTrace();
 			throw new DAOException("DAO Error: updating company failed", e);
@@ -178,10 +171,7 @@ public class CompaniesDBDAO implements CompaniesDAO {
 			String sql = "delete from companies where id=?";
 			PreparedStatement pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1, companyID);
-			int rowCount = pstmt.executeUpdate();
-			if (rowCount == 0) {
-				throw new DAOException("DAO Error: failed to find the requiered company, deleting failed");
-			}
+			pstmt.executeUpdate();
 
 		} catch (ConnectionPoolException | SQLException e) {
 			e.printStackTrace();
@@ -206,13 +196,17 @@ public class CompaniesDBDAO implements CompaniesDAO {
 			String sql = "select * from companies";
 			PreparedStatement pstmt = con.prepareStatement(sql);
 			ResultSet rs = pstmt.executeQuery();
-			while (rs.next()) {
-				Company company = new Company();
-				company.setId(rs.getInt("id"));
-				company.setName(rs.getString("name"));
-				company.setEmail(rs.getString("email"));
-				company.setPassword(rs.getString("password"));
-				companies.add(company);
+			if (rs.next()) {
+				while (rs.next()) {
+					Company company = new Company();
+					company.setId(rs.getInt("id"));
+					company.setName(rs.getString("name"));
+					company.setEmail(rs.getString("email"));
+					company.setPassword(rs.getString("password"));
+					companies.add(company);
+				}
+			}else {
+				return null;
 			}
 
 		} catch (ConnectionPoolException | SQLException e) {
@@ -246,8 +240,9 @@ public class CompaniesDBDAO implements CompaniesDAO {
 				company.setEmail(rs.getString("email"));
 				company.setPassword(rs.getString("password"));
 			} else {
-				throw new DAOException(
-						"DAO Error: failed to find the requiered company, getting company failed");
+				return null;
+//				throw new DAOException(
+//						"DAO Error: failed to find the requiered company, getting company failed");
 			}
 
 		} catch (ConnectionPoolException | SQLException e) {
@@ -260,17 +255,15 @@ public class CompaniesDBDAO implements CompaniesDAO {
 
 	}
 
-
-
 	@Override
-	public Company getLogedInCompany(String email, String password) throws DAOException {
+	public Company getLoginInCompanyID(String email, String password) throws DAOException {
 
 		Connection con;
 		Company company;
 
 		try {
 			con = connectionPool.getConnection();
-			String sql = "select * from companies where email = ? AND password = ?";
+			String sql = "select id from companies where email = ? AND password = ?";
 			PreparedStatement pstmt = con.prepareStatement(sql);
 			pstmt.setString(1, email);
 			pstmt.setString(2, password);
@@ -282,8 +275,9 @@ public class CompaniesDBDAO implements CompaniesDAO {
 				company.setEmail(rs.getString("email"));
 				company.setPassword(rs.getString("password"));
 			} else {
-				throw new DAOException(
-						"DAO Error: failed to find the requiered company, getting company failed");
+				return null;
+//				throw new DAOException(
+//						"DAO Error: failed to find the requiered company, getting company failed");
 			}
 
 		} catch (ConnectionPoolException | SQLException e) {

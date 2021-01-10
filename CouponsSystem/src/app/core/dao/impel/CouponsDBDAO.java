@@ -25,7 +25,7 @@ public class CouponsDBDAO implements CouponsDAO {
 		} catch (ConnectionPoolException e) {
 			e.printStackTrace();
 			throw new DAOException("DAO Error: initializing coupon failed", e);
-		}		
+		}
 	}
 
 	@Override
@@ -75,7 +75,7 @@ public class CouponsDBDAO implements CouponsDAO {
 			pstmt.setInt(2, coupon.getCategory().ordinal());
 
 			// adding new category if it not exists.
-			//addCategory(coupon.getCategory());
+			// addCategory(coupon.getCategory());
 
 			pstmt.setString(3, coupon.getTitle());
 			pstmt.setString(4, coupon.getDescription());
@@ -134,19 +134,23 @@ public class CouponsDBDAO implements CouponsDAO {
 			String sql = "select * from coupons";
 			PreparedStatement pstmt = con.prepareStatement(sql);
 			ResultSet rs = pstmt.executeQuery();
-			while (rs.next()) {
-				Coupon coupon = new Coupon();
-				coupon.setId(rs.getInt("id"));
-				coupon.setCompanyID(rs.getInt("company_id"));
-				coupon.setCategory(Category.values()[rs.getInt("category_id")]);
-				coupon.setTitle(rs.getString("title"));
-				coupon.setDescription(rs.getString("description"));
-				coupon.setStartDate(LocalDate.parse(rs.getString("start_date")));
-				coupon.setEndDate(LocalDate.parse(rs.getString("end_date")));
-				coupon.setAmount(rs.getInt("amount"));
-				coupon.setPrice(rs.getInt("price"));
-				coupon.setImage(rs.getString("image"));
-				coupons.add(coupon);
+			if (rs.next()) {
+				while (rs.next()) {
+					Coupon coupon = new Coupon();
+					coupon.setId(rs.getInt("id"));
+					coupon.setCompanyID(rs.getInt("company_id"));
+					coupon.setCategory(Category.values()[rs.getInt("category_id")]);
+					coupon.setTitle(rs.getString("title"));
+					coupon.setDescription(rs.getString("description"));
+					coupon.setStartDate(LocalDate.parse(rs.getString("start_date")));
+					coupon.setEndDate(LocalDate.parse(rs.getString("end_date")));
+					coupon.setAmount(rs.getInt("amount"));
+					coupon.setPrice(rs.getInt("price"));
+					coupon.setImage(rs.getString("image"));
+					coupons.add(coupon);
+				}
+			}else {
+				return null;
 			}
 
 		} catch (ConnectionPoolException | SQLException e) {
@@ -183,8 +187,8 @@ public class CouponsDBDAO implements CouponsDAO {
 				coupon.setPrice(rs.getInt("price"));
 				coupon.setImage(rs.getString("image"));
 			} else {
-				throw new DAOException(
-						"DAO Error: failed to find the requiered coupons, getting company failed");
+				return null;
+//				throw new DAOException("DAO Error: failed to find the requiered coupons, getting company failed");
 			}
 
 		} catch (ConnectionPoolException | SQLException e) {
@@ -231,8 +235,7 @@ public class CouponsDBDAO implements CouponsDAO {
 			pstmt.setInt(2, couponID);
 			int rowCount = pstmt.executeUpdate();
 			if (rowCount == 0) {
-				throw new DAOException(
-						"DAO Error: failed to find the requiered coupon purchase, deleting failed");
+				throw new DAOException("DAO Error: failed to find the requiered coupon purchase, deleting failed");
 			}
 
 		} catch (ConnectionPoolException | SQLException e) {
@@ -243,7 +246,6 @@ public class CouponsDBDAO implements CouponsDAO {
 		connectionPool.restoreConnection(con);
 
 	}
-
 
 	@Override
 	public void addCategory(Category category) throws DAOException {
@@ -265,8 +267,5 @@ public class CouponsDBDAO implements CouponsDAO {
 		connectionPool.restoreConnection(con);
 
 	}
-
-
-
 
 }

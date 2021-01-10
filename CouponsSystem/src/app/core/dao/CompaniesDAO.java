@@ -30,7 +30,7 @@ public interface CompaniesDAO {
 	
 	
 	
-	public Company getLogedInCompany(String email, String password) throws DAOException;
+	public Company getLoginInCompanyID(String email, String password) throws DAOException;
 	
 	
 	/**

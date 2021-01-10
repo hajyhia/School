@@ -3,6 +3,7 @@ package app.core.clientsFacade;
 import app.core.dao.CompaniesDAO;
 import app.core.dao.CouponsDAO;
 import app.core.dao.CustomersDAO;
+import app.core.exceptions.FacadeException;
 
 public abstract class ClientFacade {
 
@@ -12,6 +13,6 @@ public abstract class ClientFacade {
 	
 	public CouponsDAO couponsDAO;
 	
-	public abstract boolean login(String email, String password);
+	public abstract boolean login(String email, String password) throws FacadeException;
 	
 }

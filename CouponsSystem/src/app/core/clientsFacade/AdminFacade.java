@@ -7,8 +7,8 @@ import app.core.beans.Customer;
 import app.core.dao.impel.CompaniesDBDAO;
 import app.core.dao.impel.CouponsDBDAO;
 import app.core.dao.impel.CustomersDBDAO;
-import app.core.exceptions.FacadeException;
 import app.core.exceptions.DAOException;
+import app.core.exceptions.FacadeException;
 
 public class AdminFacade extends ClientFacade {
 
@@ -61,7 +61,16 @@ public class AdminFacade extends ClientFacade {
 	public void updateCompany(Company company) throws FacadeException {
 
 		try {
-			companiesDAO.updateCompany(company);
+			Company currCompany = companiesDAO.getOneCompany(company.getId());
+			if(currCompany != null) {
+				if (currCompany.getName() == company.getName()) {
+					companiesDAO.updateCompany(company);			
+				}else {
+					throw new FacadeException("AdminFacade Error: updating company failed, can not update company's name");
+				}
+			}else {
+				throw new FacadeException("AdminFacade Error: updating company failed, did not find required company");
+			}
 		} catch (DAOException e) {
 			e.printStackTrace();
 			throw new FacadeException("AdminFacade Error: updating company failed", e);
